@@ -1,0 +1,144 @@
+﻿@page
+@using System.Text.Json
+@model Library.Pages.Admin.DashboardModel
+@{
+    Layout = "Shared/_LayoutAdmin";
+    ViewData["Title"] = "Dashboard";
+    var x = JsonSerializer.Serialize(Model.OrdersByMonth);
+}
+<div id="main" style="background-color: #f2f7ff;">
+    <header class="mb-3">
+        <a href="#" class="burger-btn d-block d-xl-none">
+            <i class="bi bi-justify fs-3"></i>
+        </a>
+    </header>
+
+    <div class="page-heading">
+        <h3>Dashboard Statistics</h3>
+    </div>
+    <div class="page-content">
+        <section class="row">
+            <!--nhan-->
+            <div class="col-12 col-lg-9">
+                <div class="row">
+                    <div class="col-6 col-lg-4 col-md-6">
+                        <div class="card">
+                            <div class="card-body px-3 py-4-5">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="stats-icon purple">
+                                            <i class="fas fa-book"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <h6 class="text-muted font-semibold">Total Books</h6>
+                                        <h6 class="font-extrabold mb-0">@Model.CountBook</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-4 col-md-6">
+                        <div class="card">
+                            <div class="card-body px-3 py-4-5">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="stats-icon blue">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <h6 class="text-muted font-semibold">Total Users</h6>
+                                        <h6 class="font-extrabold mb-0">@Model.CountUser</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-4 col-md-6">
+                        <div class="card">
+                            <div class="card-body px-3 py-4-5">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="stats-icon green">
+                                            <i class="fab fa-first-order"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <h6 class="text-muted font-semibold">Orders Today</h6>
+                                        <h6 class="font-extrabold mb-0">@Model.CountOrder</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4>Products Monthly Orders</h4>
+                            </div>
+                            <div class="card-body">
+                                <div id="chart"></div>
+                                <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+                                <script>
+                                    var ordersByMonth = @Html.Raw(Json.Serialize(Model.OrdersByMonth));
+
+                                    var options = {
+                                        chart: {
+                                            type: 'area',
+                                            height: 350,
+                                            zoom: {
+                                                enabled: false
+                                            }
+                                        },
+                                        dataLabels: {
+                                            enabled: false
+                                        },
+                                        stroke: {
+                                            curve: 'smooth'
+                                        },
+                                        series: [{
+                                            name: 'Orders',
+                                            data: ordersByMonth
+                                        }],
+                                        xaxis: {
+                                            categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                                        },
+                                        tooltip: {
+                                            x: {
+                                                format: 'MM'
+                                            },
+                                        },
+                                        fill: {
+                                            type: 'gradient',
+                                            gradient: {
+                                                shadeIntensity: 1,
+                                                opacityFrom: 0.7,
+                                                opacityTo: 0.9,
+                                                stops: [0, 90, 100]
+                                            }
+                                        },
+                                        colors: ['#1E90FF'],
+                                        legend: {
+                                            position: 'top',
+                                            horizontalAlign: 'right'
+                                        }
+                                    };
+
+                                    var chart = new ApexCharts(document.querySelector("#chart"), options);
+                                    chart.render();
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            <!-- het nhan-->
+        </section>
+    </div>
+
+
+</div>

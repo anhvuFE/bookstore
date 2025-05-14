@@ -1,0 +1,98 @@
+﻿@page "{id:int}"
+@model Library.Pages.Books.AuthorDetailModel
+@{
+    ViewData["Title"] = "Author Detail";
+}
+<!--************************************
+                Inner Banner Start
+        *************************************-->
+<div class="tg-innerbanner tg-haslayout tg-parallax tg-bginnerbanner" data-z-index="-100" data-appear-top-offset="600" data-parallax="scroll" data-image-src="/img/parallax/bgparallax-07.jpg">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="tg-innerbannercontent">
+                    <h1>Authors</h1>
+                    <ol class="tg-breadcrumb">
+                        <li><a href="javascript:void(0);">home</a></li>
+                        <li><a href="javascript:void(0);">Authors</a></li>
+                        <li class="tg-active">Authors Title</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--************************************
+        Inner Banner End
+*************************************-->
+<!--************************************
+        Main Start
+*************************************-->
+<main id="tg-main" class="tg-main tg-haslayout">
+    <!--************************************
+            Author Detail Start
+    *************************************-->
+    <div class="tg-sectionspace tg-haslayout">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div class="tg-authordetail">
+                        <figure class="tg-authorimg">
+                            <img src="@Model.author.Image" alt="@Model.author.Fullname" style="width:370px; height:370px; object-fit:cover;">
+                        </figure>
+                        <div class="tg-authorcontentdetail">
+                            <div class="tg-sectionhead">
+                                <h2><span>@Model.author.Books.Count() Published Books</span>@Model.author.Fullname</h2>
+                                <ul class="tg-socialicons">
+                                    <li class="tg-facebook"><a href="javascript:void(0);"><i class="fa fa-facebook"></i></a></li>
+                                    <li class="tg-twitter"><a href="javascript:void(0);"><i class="fa fa-twitter"></i></a></li>
+                                    <li class="tg-linkedin"><a href="javascript:void(0);"><i class="fa fa-linkedin"></i></a></li>
+                                    <li class="tg-googleplus"><a href="javascript:void(0);"><i class="fa fa-google-plus"></i></a></li>
+                                    <li class="tg-rss"><a href="javascript:void(0);"><i class="fa fa-rss"></i></a></li>
+                                </ul>
+                            </div>
+                            <div class="tg-description">
+                                <p>@Model.author.Infomation</p>
+                                <p>@Model.author.BriefInfomaton</p>
+                            </div>
+                            <div class="tg-booksfromauthor">
+                                <div class="tg-sectionhead">
+                                    <h2>Books of @Model.author.Fullname</h2>
+                                </div>
+                                <div class="row">
+                                    @foreach (var book in Model.author.Books)
+                                    {
+                                        <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
+                                            <div class="tg-postbook">
+                                                <figure class="tg-featureimg">
+                                                    <div class="tg-bookimg">
+                                                        <div class="tg-frontcover"><img src="@book.Image" alt="image description"></div>
+                                                        <div class="tg-backcover"><img src="@book.Image" alt="image description"></div>
+                                                    </div>
+                                                </figure>
+                                                <div class="tg-postbookcontent">
+                                                    <ul class="tg-bookscategories">
+                                                        <li><a href="javascript:void(0);">@book.Category.CategoryName</a></li>
+                                                    </ul>
+                                                    <div class="tg-themetagbox"><span class="tg-themetag">sale</span></div>
+                                                    <div class="tg-booktitle">
+                                                        <h3><a asp-page="Detail" asp-route-id="@book.BookId">@book.Title</a></h3>
+                                                    </div>
+                                                    <span class="tg-bookwriter">By: <a href="javascript:void(0);">@Model.author.Fullname</a></span>
+                                                    @for (int i = 1; i <= book.Rate; i++)
+                                                    {
+                                                        <span class="fa fa-star text-primary mr-1"></span>
+                                                    }
+                                                    <span class="tg-bookprice">
+                                                        <ins>&euro; @book.Price</ins>
+                                                        <del>&euro; @(book.Price * 2)</del>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+</main>

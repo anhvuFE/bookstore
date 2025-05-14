@@ -1,0 +1,275 @@
+﻿@page
+@model Library.Pages.Admin.CategoryManagementModel
+@using System.Text.Json
+@using System.Text.Json.Serialization
+@{
+    Layout = "Shared/_LayoutAdmin";
+    ViewData["Title"] = "Category Manage";
+}
+<div id="main">
+    <header class="mb-3">
+        <a href="#" class="burger-btn d-block d-xl-none">
+            <i class="bi bi-justify fs-3"></i>
+        </a>
+    </header>
+
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last">
+                    <h3>Category Management</h3>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="dashboard">Dashboard</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Category Management</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <section class="section">
+            <div class="card">
+                <div class="card-header">
+                    @* <form asp-page="/Admin/CategoryManagement" asp-page-handler="ExportFile" method="POST"> *@
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAdd">Add a new category</button>
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.ImportMessage))
+                {
+                    <p>@Model.ImportMessage</p>
+                }
+                <div class="card-body">
+                    <table class="table table-striped" id="table1">
+                        <thead>
+                            <tr>
+                                <th>Category ID</th>
+                                <th>Category Name</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var item in Model.Categories)
+                            {
+                                <tr>
+
+                                    <td>@item.CategoryId</td>
+                                    <td>
+                                        @item.CategoryName
+                                    </td>
+                                    <td>
+                                        <!--Modal trigger-->
+                                        <a data-toggle="modal" data-target="#modalEdit" class='sidebar-link clickingEdit' data-categoryid="@item.CategoryId" data-categoryname="@item.CategoryName" data-image="@item.Image">
+                                            <i class="fa fa-pencil"></i>
+
+                                        </a>
+                                        &nbsp;
+                                        <a data-toggle="modal" data-target="#modalView" class='sidebar-link clickingView' data-categoryid="@item.CategoryId" data-categoryname="@item.CategoryName" data-image="@item.Image">
+
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                        @* <a class="deleteBtn" data-categoryId="@item.CategoryId">
+
+                                    <i class="fa fa-trash"></i>
+                                    </a> *@
+
+                                        <!-- End Modal trigger -->
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+    </div>
+
+
+</div>
+
+
+<div class="modal hide fade" id="modalEdit">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-page="/Admin/CategoryManagement" asp-page-handler="EditCategory" method="POST" enctype="multipart/form-data">
+                <input type="hidden" id="categoryid" name="id">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit Category</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="categoryname" class="col-form-label">Category Name:</label>
+                        <input type="text" class="form-control" id="categoryname" name="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="image" class="col-form-label">Image:</label>
+                        <img class="form-control" id="image" name="image" style="height: fit-content" />
+                        <input type="text" name="newimage" id="newimage">
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <input type="submit" value="Save" class="btn btn-success" />
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal hide fade" id="modalView">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">User Information</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="categoryname" class="col-form-label">Category Name:</label>
+                    <input type="text" class="form-control" id="categorynames" name="name" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="image" class="col-form-label">Image:</label>
+                    <img class="form-control" id="images" name="image" style="height: fit-content" />
+                </div>
+
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal hide fade" id="modalAdd">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Add a new category</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <form asp-page="/Admin/CategoryManagement" asp-page-handler="AddCategory" method="POST" enctype="multipart/form-data">
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label asp-for="Category.CategoryName" class="col-form-label"></label>
+                        <input asp-for="Category.CategoryName" class="form-control">
+
+                    </div><div class="form-group">
+                        <label asp-for="Image" class="col-form-label"></label>
+                        <input asp-for="Image" class="form-control">
+
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <input type="submit" value="Add" class="btn btn-success" />
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    // Simple Datatable
+    let table1 = document.querySelector('#table1');
+    let dataTable = new simpleDatatables.DataTable(table1);
+</script>
+<script>
+    $(document).ready(function () {
+        $(".clickingEdit").click(function () { // Click to only happen on announce links
+            $("#image").attr("src", $(this).data('image'));
+            $("#categoryname").val($(this).data('categoryname'));
+            $("#categoryid").val($(this).data('categoryid'));
+            $('#modalEdit').modal('show');
+        });
+    });
+</script>
+
+
+
+<script>
+    $(document).ready(function () {
+        $(".clickingView").click(function () { // Click to only happen on announce links
+            $("#categorynames").val($(this).data('categoryname'));
+            $("#categoryid").val($(this).data('categoryid'));
+            $("#images").attr("src", $(this).data('image'));
+
+            $('#modalView').modal('show');
+        });
+    });
+</script>
+<script>
+    function exportData() {
+        fetch('/Admin/CategoryManagement?handler=ExportFile')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Export failed');
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = 'data.csv';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            })
+            .catch(error => {
+                console.error('Export failed:', error);
+                alert('Export failed. Please try again later.');
+            });
+    }
+</script>
+<script>
+    @* $(document).ready(function () {
+        $(".deleteBtn").click(function () { // Click to only happen on announce links
+        const categoryId = $(this).data('categoryid');
+
+        $.ajax({
+        url: '/Admin/CategoryManagement?handler=DeleteCategory',
+        type: 'GET',
+        data: { categoryId: categoryId },
+        success: function (response) {
+        if(response == "1"){
+        alert("Delete successfully!");
+        location.reload();
+        }
+        else{
+        alert("Category is being used!");
+        }
+        },
+        error: function (xhr, status, error) {
+        console.error(error);
+        }
+
+        });
+        });
+        }); *@
+</script>

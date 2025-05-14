@@ -1,0 +1,110 @@
+﻿@page
+@model Library.Pages.Orders.OrderModel
+@{
+    ViewData["Title"] = "Your Order";
+}
+
+<div class="tg-sectionspace tg-haslayout" style="margin-top:50px">
+    <div class="container">
+        <div class="row">
+            <div class="col cart">
+                <div class="title">
+                    <div class="row">
+                        <div class="col"><h4><b>Orders History</b></h4></div>
+                        <div class="col align-self-center text-right text-muted">Total @Model.Orders.Count orders</div>
+                    </div>
+                </div>
+                @foreach (var item in Model.Orders)
+                {
+                    <div class="row mb-3">
+                        <div class="col">
+                            <div class="card card-2">
+                                <div class="card-body">
+                                    <div class="media">
+                                        <div class="media-body my-auto">
+                                            <div class="row my-auto">
+                                                <div class="col-md-12 my-auto">
+                                                    <h6 class="">Order Date: @item.OrderDate.ToString("D")</h6>
+                                                </div>
+                                            </div>
+                                            <div class="row my-auto">
+                                                <div class="col-md-6 my-auto">
+                                                    <small>Address: @item.Address</small>
+                                                </div>
+                                                <div class="col-md-6 my-auto">
+                                                    <small>Total: &euro; @item.Total</small>
+                                                </div>
+                                            </div>
+                                            <div class="row my-auto">
+                                                <div class="col-md-6 my-auto">
+                                                    <small>Number of items: @item.OrderDetails.Count</small>
+                                                </div>
+                                                <div class="col-md-6 my-auto">
+                                                    <small>Status: @item.Status</small>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="collapse" id="orderDetailsCollapse_@item.OrderId">
+                                                        <!-- Đặt mỗi collapse có id duy nhất cho từng đơn hàng -->
+                                                        <div class="mt-3">
+                                                            <h6>Detail Order:</h6>
+                                                            <ul>
+                                                                <div class="col-xs-12 col-sm-8 col-md-8 col-lg-9 ">
+                                                                    <div id="tg-content" class="tg-content">
+                                                                        <div class="tg-newslist">
+                                                                @foreach (var product in item.OrderDetails)
+                                                                {
+                                                                    <div class="row">
+                                                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                                            <article class="tg-post">
+                                                                                <div class="col-2"><img class="img-fluid" src="@product.Book.Image"></div>
+                                                                                <div class="tg-postcontent">
+                                                                                    <ul class="tg-bookscategories">
+                                                                                        <li><a href="javascript:void(0);">@product.Book.Category.CategoryName</a></li>
+                                                                                    </ul>
+                                                                                    <div class="tg-posttitle">
+                                                                                        <h3><a href="#">@product.Book.Title</a></h3>
+                                                                                    </div>
+                                                                                    <div class="tg-description">
+                                                                                        <p>&euro; @product.Book.Price</p>
+                                                                                    </div>
+                                                                                    <span class="tg-bookwriter">Quantity: <a href="#">@product.Quantity item(s)</a></span>
+                                                                                </div>
+                                                                            </article>
+                                                                        </div>
+                                                                    </div>
+                                                                }
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-auto">
+                                            <button class="btn btn-success btn-sm" type="button" data-bs-toggle="collapse"
+                                                    data-bs-target="#orderDetailsCollapse_@item.OrderId" aria-expanded="false"
+                                                    aria-controls="orderDetailsCollapse_@item.OrderId">
+                                                <!-- Đặt id của collapse tương ứng với id của đơn hàng -->
+                                                Show Details
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <div class="back-to-shop"><a href="/Books/Index">&leftarrow;</a><span class="text-muted">Back to shop</span></div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+<link href="~/css/mycustom.css" rel="stylesheet" />

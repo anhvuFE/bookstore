@@ -1,0 +1,384 @@
+﻿@page
+@model Library.Pages.Admin.BookManagementModel
+@{
+    Layout = "Shared/_LayoutAdmin";
+    ViewData["Title"] = "Book Manage";
+}
+<div id="main">
+    <header class="mb-3">
+        <a href="#" class="burger-btn d-block d-xl-none">
+            <i class="bi bi-justify fs-3"></i>
+        </a>
+    </header>
+
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last">
+                    <h3>Book Management</h3>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="dashboard">Dashboard</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Book Management</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <section class="section">
+            <div class="card">
+                <div class="card-header">
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAdd">Add a new book</button>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped" id="table1">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Publisher</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var item in Model.Books)
+                            {
+                                <tr>
+
+                                    <td>@item.Title</td>
+                                    <td>
+                                        @item.Category.CategoryName
+                                    </td>
+                                    <td>@item.Publisher</td>
+                                    <td>@item.PublicationDate</td>
+                                    @{
+                                        var status = item.Status.Value ? "success" : "danger";
+                                        var displayStatus = item.Status.Value ? "Active" : "Inactive";
+                                    }
+                                    <td>
+                                        <span class="badge bg-@status">@displayStatus</span>
+                                    </td>
+                                    <td>
+                                        <!--Modal trigger-->
+                                        <a data-toggle="modal" data-target="#modalEdit" class='sidebar-link clicking' data-book_id="@item.BookId" data-title="@item.Title" data-category="@item.CategoryId" data-publisher="@item.Publisher" data-quantity="@item.Quantity" data-date="@item.PublicationDate.Value.ToString("yyyy-MM-dd")" data-image="@item.Image" data-rate="@item.Rate" data-status="@(item.Status.Value ? '1' : '0')" data-introduction="@item.Introduction" data-description="@item.Description">
+                                            <i class="fa fa-pencil"></i>
+
+                                        </a>
+                                        &nbsp;
+                                        <a data-toggle="modal" data-target="#modalView" class='sidebar-link clickingView' data-book_id="@item.BookId" data-title="@item.Title" data-category="@item.CategoryId" data-publisher="@item.Publisher" data-quantity="@item.Quantity" data-date="@item.PublicationDate.Value.ToString("yyyy-MM-dd")" data-image="@item.Image" data-rate="@item.Rate" data-status="@(item.Status.Value ? '1' : '0')" data-introduction="@item.Introduction" data-description="@item.Description">
+
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                        <!-- End Modal trigger -->
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+    </div>
+
+
+</div>
+<div class="modal hide fade" id="modalEdit">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-page="/Admin/BookManagement" asp-page-handler="EditBook" method="POST" enctype="multipart/form-data">
+                <input type="hidden" id="bookid" name="id">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit Book</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="title" class="col-form-label">Title:</label>
+                        <input type="text" class="form-control" id="title" name="title">
+                    </div>
+                    <div class="form-group">
+                        <label for="category" class="col-form-label">Category:</label>
+                        <select class="form-control" id="category" name="category">
+                            @foreach (var item in Model.Categories)
+                            {
+                                <option value="@item.CategoryId">@item.CategoryName</option>
+                            }
+
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="publisher" class="col-form-label">Publisher:</label>
+                        <input type="text" class="form-control" id="publisher" name="publisher">
+                    </div>
+                    <div class="form-group">
+                        <label for="date" class="col-form-label">Publication Date:</label>
+                        <input type="date" class="form-control" id="date" name="date">
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity" class="col-form-label">Quantity:</label>
+                        <input type="number" class="form-control" id="quantity" name="quantity">
+                    </div>
+                    <div class="form-group">
+                        <label for="image" class="col-form-label">Image:</label>
+                        <img class="form-control" id="image" name="image" style="height: fit-content" />
+                        <input type="file" name="newimage" id="newimage">
+                    </div>
+                    <div class="form-group ">
+                        <label for="rate" class="col-form-label">Rate:</label>
+                        <input type="number" class="form-control" id="rate" name="rate">
+                    </div>
+                    <div class="form-group">
+                        <label for="status" class="col-form-label">Status:</label>
+                        <select class="form-control" id="status" name="status">
+                            <option value="1">Active</option>
+                            <option value="0">Inactive</option>
+                        </select>
+
+                    </div>
+                    <div class="form-group">
+                        <label for="introduction" class="col-form-label">Introduction:</label>
+                        <input type="text" class="form-control" id="introduction" name="introduction">
+                    </div>
+                    <div class="form-group">
+                        <label for="description" class="col-form-label">Description:</label>
+                        <input type="text" class="form-control" id="description" name="description">
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <input type="submit" value="Save" class="btn btn-success" />
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal hide fade" id="modalView">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Book Information</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="title" class="col-form-label">Title:</label>
+                    <input type="text" class="form-control" id="titles" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="category" class="col-form-label">Category:</label>
+                    <input type="text" class="form-control" id="categorys" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="publisher" class="col-form-label">Publisher:</label>
+                    <input type="text" class="form-control" id="publishers" name="publisher" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="date" class="col-form-label">Publication Date:</label>
+                    <input type="date" class="form-control" id="dates" name="date" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="quantity" class="col-form-label">Quantity:</label>
+                    <input type="number" class="form-control" id="quantitys" name="quantity" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="image" class="col-form-label">Image:</label>
+                    <img class="form-control" id="images" name="image" style="height: fit-content" />
+
+                </div>
+                <div class="form-group ">
+                    <label for="rate" class="col-form-label">Rate:</label>
+                    <input type="number" class="form-control" id="rates" name="rate" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="status" class="col-form-label">Status:</label>
+                    <input type="text" class="form-control" id="statuss" name="status" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="introduction" class="col-form-label">Introduction:</label>
+                    <input type="text" class="form-control" id="introductions" name="introduction" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="description" class="col-form-label">Description:</label>
+                    <input type="text" class="form-control" id="descriptions" name="description" disabled>
+                </div>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal hide fade" id="modalAdd">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Add a new book</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <form asp-page="/Admin/BookManagement" asp-page-handler="AddBook" method="POST" enctype="multipart/form-data">
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label asp-for="Book.Title" class="col-form-label"></label>
+                        <input  class="form-control" asp-for="Book.Title">
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Book.CategoryId" class="col-form-label"></label>
+                        <select class="form-control" asp-for="Book.CategoryId">
+                            @foreach (var item in Model.Categories)
+                            {
+                                <option value="@item.CategoryId">@item.CategoryName</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Book.Publisher" class="col-form-label"></label>
+                        <input asp-for="Book.Publisher" class="form-control" >
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Book.PublicationDate" class="col-form-label"></label>
+                        <input  class="form-control" asp-for="Book.PublicationDate">
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Book.Quantity" class="col-form-label"></label>
+                        <input  class="form-control" asp-for="Book.Quantity">
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Book.Author" class="col-form-label"></label>
+                        <select class="form-control" asp-for="Book.AuthorId">
+                            @foreach (var item in Model.Authors)
+                            {
+                                <option value="@item.AuthorId">@item.Fullname</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Image" class="col-form-label"></label>
+                        <input asp-for="Image" class="form-control">
+
+                    </div>
+                    <div class="form-group ">
+                        <label asp-for="Book.Rate" class="col-form-label"></label>
+                        <input asp-for="Book.Rate" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="status" class="col-form-label">Status:</label>
+                        <select class="form-control" asp-for="Book.Status">
+                            <option value="True">Active</option>
+                            <option value="False">Inactive</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Book.Introduction" class="col-form-label"></label>
+                        <input asp-for="Book.Introduction" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Book.Description" class="col-form-label"></label>
+                        <input asp-for="Book.Description" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Book.Price" class="col-form-label"></label>
+                        <input asp-for="Book.Price" class="form-control">
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <input type="submit" value="Add" class="btn btn-success" />
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+<script>
+    // Simple Datatable
+    let table1 = document.querySelector('#table1');
+    let dataTable = new simpleDatatables.DataTable(table1);
+</script>
+
+<script>
+    $(document).ready(function () {
+        $(".clicking").click(function () { // Click to only happen on announce links
+            $("#bookid").val($(this).data('book_id'));
+            $("#title").val($(this).data('title'));
+            $("#category").val($(this).data('category'));
+            $("#publisher").val($(this).data('publisher'));
+            $("#date").val($(this).data('date'));
+            $("#quantity").val($(this).data('quantity'));
+            $("#image").attr("src", $(this).data('image'));
+            $("#rate").val($(this).data('rate'));
+            $("#status").val($(this).data('status'));
+            $("#introduction").val($(this).data('introduction'));
+            $("#description").val($(this).data('description'));
+            $('#modalEdit').modal('show');
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $(".clickingView").click(function () { // Click to only happen on announce links
+            $("#titles").val($(this).data('title'));
+            $("#categorys").val($(this).data('category'));
+            $("#publishers").val($(this).data('publisher'));
+            $("#dates").val($(this).data('date'));
+            $("#quantitys").val($(this).data('quantity'));
+            $("#images").attr("src", $(this).data('image'));
+            $("#rates").val($(this).data('rate'));
+            $("#statuss").val($(this).data('status'));
+            $("#introductions").val($(this).data('introduction'));
+            $("#descriptions").val($(this).data('description'));
+            $('#modalView').modal('show');
+        });
+    });
+</script>
+<script>
+    function exportData() {
+        fetch('/Admin/BookManagement?handler=ExportFile')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Export failed');
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = 'data.csv';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            })
+            .catch(error => {
+                console.error('Export failed:', error);
+                alert('Export failed. Please try again later.');
+            });
+    }
+</script>

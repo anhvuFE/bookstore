@@ -1,0 +1,256 @@
+﻿@page
+@model Library.Pages.Admin.AccountManagementModel
+@{
+    Layout = "Shared/_LayoutAdmin";
+    ViewData["Title"] = "Account Manage";
+}
+<div id="main">
+    <header class="mb-3">
+        <a href="#" class="burger-btn d-block d-xl-none">
+            <i class="bi bi-justify fs-3"></i>
+        </a>
+    </header>
+
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last">
+                    <h3>User Management</h3>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="dashboard">Dashboard</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Order Management</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <section class="section">
+            <div class="card">
+                <div class="card-header">
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped" id="table1">
+                        <thead>
+                            <tr>
+                                <th>Full Name</th>
+                                <th>User Name</th>
+                                <th>Mail</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var item in Model.Users)
+                            {
+                                <tr>
+
+                                    <td>@item.Fullname</td>
+                                    <td>
+                                        @item.Username
+                                    </td>
+                                    <td>@item.Mail</td>
+                                    @{
+                                        var status = item.Status ? "success" : "danger";
+                                    }
+                                    <td>
+                                        <span class="badge bg-@status">@item.Status</span>
+                                    </td>
+                                    <td>
+                                        <!--Modal trigger-->
+                                        <a data-toggle="modal" data-target="#modalEdit" class='sidebar-link clicking' data-userid="@item.UserId" data-username="@item.Username" data-fullname="@item.Fullname" data-email="@item.Mail" data-role="@item.UserRole" data-status="@item.Status">
+                                            <i class="fa fa-pencil"></i>
+
+                                        </a>
+                                        &nbsp;
+                                        <a data-toggle="modal" data-target="#modalView" class='sidebar-link clickingView' data-userid="@item.UserId" data-username="@item.Username" data-fullname="@item.Fullname" data-email="@item.Mail" data-role="@item.UserRole" data-status="@item.Status">
+
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                        <!-- End Modal trigger -->
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+    </div>
+
+
+</div>
+<div class="modal hide fade" id="modalEdit">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-page="/Admin/AccountManagement" asp-page-handler="EditUser" method="POST" enctype="multipart/form-data">
+                <input type="hidden" id="userid" name="id">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit User</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="role" class="col-form-label">Role:</label>
+                        <select class="form-control" id="role" name="role">
+                            <option value="admin">Admin</option>
+                            <option value="user">User</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="status" class="col-form-label">Status:</label>
+                        <select class="form-control" id="status" name="status">
+                            <option value="True">Active</option>
+                            <option value="False">Inactive</option>
+                        </select>
+
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal hide fade" id="modalView">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">User Information</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="fullname" class="col-form-label">Full Name:</label>
+                    <input type="text" class="form-control" id="fullnames" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="col-form-label">Email:</label>
+                    <input type="text" class="form-control" id="emails" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="publisher" class="col-form-label">User Name:</label>
+                    <input type="text" class="form-control" id="usernames" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="date" class="col-form-label">Role:</label>
+                    <input type="text" class="form-control" id="roles" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="status" class="col-form-label">Status:</label>
+                    <input type="text" class="form-control" id="statuss" disabled>
+                </div>
+                
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal hide fade" id="modalAdd">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Add a new user</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <form asp-page="/Admin/AccountManagement" asp-page-handler="AddUser" method="POST" enctype="multipart/form-data">
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label asp-for="User.Username" class="col-form-label"></label>
+                        <input class="form-control" asp-for="User.Username">
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="User.Fullname" class="col-form-label"></label>
+                        <input class="form-control" asp-for="User.Fullname">
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="User.Password" class="col-form-label"></label>
+                        <input asp-for="User.Password" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="User.Mail" class="col-form-label"></label>
+                        <input asp-for="User.Mail" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="User.UserRole" class="col-form-label"></label>
+                        <select class="form-control" asp-for="User.UserRole">
+                            <option value="admin">Admin</option>
+                            <option value="user">User</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="User.Status" class="col-form-label"></label>
+                        <select class="form-control" asp-for="User.Status">
+                            <option value="True">Active</option>
+                            <option value="False">Disabled</option>
+                        </select>
+
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <input type="submit" value="Add" class="btn btn-primary" />
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+<script>
+    // Simple Datatable
+    let table1 = document.querySelector('#table1');
+    let dataTable = new simpleDatatables.DataTable(table1);
+</script>
+<script>
+    $(document).ready(function () {
+        $(".clicking").click(function () { // Click to only happen on announce links
+            $("#userid").val($(this).data('userid'));
+            $("#role").val($(this).data('role'));
+            $("#status").val($(this).data('status'));
+            $('#modalEdit').modal('show');
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $(".clickingView").click(function () { // Click to only happen on announce links
+            $("#fullnames").val($(this).data('userid'));
+            $("#roles").val($(this).data('role'));
+            $("#statuss").val($(this).data('status'));
+            $("#emails").val($(this).data('email'));
+            $("#usernames").val($(this).data('username'));
+            $('#modalView').modal('show');
+        });
+    });
+</script>

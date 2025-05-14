@@ -1,0 +1,239 @@
+﻿@page
+@model Library.Pages.Book.SearchModel
+@{
+    ViewData["Title"] = "Books";
+    var idValue = ViewData["idValue"] as List<int>;
+    var search = ViewData["search"] as string;
+}
+
+<div class="tg-innerbanner tg-haslayout tg-parallax tg-bginnerbanner" data-z-index="-100" data-appear-top-offset="600" data-parallax="scroll" data-image-src="/img/parallax/bgparallax-07.jpg">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="tg-innerbannercontent">
+                    <h1>All Books</h1>
+                    <ol class="tg-breadcrumb">
+                        <li><a asp-page="/Books/Index">home</a></li>
+                        <li class="tg-active">Books</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<main id="tg-main" class="tg-main tg-haslayout">
+    <div class="tg-sectionspace tg-haslayout">
+        <div class="container">
+            <div class="row">
+                <div id="tg-twocolumns" class="tg-twocolumns">
+                    <div class="col-xs-12 col-sm-8 col-md-8 col-lg-9 pull-right">
+                        <div id="tg-content" class="tg-content">
+                            <div class="tg-products">
+                                <div class="tg-sectionhead">
+                                    <h2><span>People’s Choice</span>Bestselling Books</h2>
+                                </div>
+
+                                <div class="tg-productgrid">
+                                    @foreach (var item in Model.Books)
+                                    {
+                                        <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
+                                            <div class="tg-postbook">
+                                                <figure class="tg-featureimg">
+                                                    <div class="tg-bookimg">
+                                                        <div class="tg-frontcover"><img src="@item.Image" alt="image description"></div>
+                                                        <div class="tg-backcover"><img src="@item.Image" alt="image description"></div>
+                                                    </div>
+                                                </figure>
+                                                <div class="tg-postbookcontent">
+                                                    <ul class="tg-bookscategories">
+                                                        <li><a>@item.Category.CategoryName</a></li>
+                                                    </ul>
+                                                    <div class="tg-themetagbox"><span class="tg-themetag">sale</span></div>
+                                                    <div class="tg-booktitle">
+                                                        <h3><a asp-page="Detail" asp-route-id="@item.BookId">@item.Title</a></h3>
+                                                    </div>
+                                                    <span class="tg-bookwriter">By: <a>@item.Author.Fullname</a></span>
+                                                    @for (int i = 1; i <= item.Rate; i++)
+                                                    {
+                                                        <span class="fa fa-star text-primary mr-1"></span>
+                                                    }
+                                                    <span class="tg-bookprice">
+                                                        <ins>&euro; @item.Price</ins>
+                                                        <del>&euro; @(item.Price * 2)</del>
+                                                    </span>
+                                                    <a class="tg-btn tg-btnstyletwo" asp-page="/Orders/Cart" asp-page-handler="AddCart" asp-route-bookId="@item.BookId">
+                                                        <i class="fa fa-shopping-basket"></i>
+                                                        <em>Add To Cart</em>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                                <!-- Code for displaying books -->
+                                <div class="col-12">
+                                    <nav>
+                                        <ul class="pagination justify-content-center">
+                                            @if (Model.CurrentPage > 1)
+                                            {
+                                                <li class="page-item previous">
+                                                    <a class="page-link" asp-page="/Books/Search" asp-route-pages="@(Model.CurrentPage - 1)">Previous</a>
+                                                </li>
+                                            }
+                                            @for (int i = 1; i <= Model.TotalPages; i++)
+                                            {
+                                                <li class="page-item number @(i == Model.CurrentPage ? "active" : "")">
+                                                    <a class="page-link" asp-page="/Books/Search" asp-route-pages="@i">@i</a>
+                                                </li>
+                                            }
+
+                                            @if (Model.CurrentPage < Model.TotalPages)
+                                            {
+                                                <li class="page-item next">
+                                                    <a class="page-link" asp-page="/Books/Search" asp-route-pages="@(Model.CurrentPage + 1)">Next</a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3 pull-left">
+                        <aside id="tg-sidebar" class="tg-sidebar">
+                            <div class="tg-widget tg-catagories">
+                                <div class="tg-widgettitle">
+                                    <h3>Categories</h3>
+                                </div>
+                                <div class="tg-widgetcontent">
+                                    <form method="get" asp-page="/Books/Search">
+                                        <ul>
+                                            @foreach (var item in Model.Categories)
+                                            {
+                                                <li>
+                                                    <div>
+                                                        <input type="checkbox" class="custom-control-input" id="book-@item.CategoryId" name="cid" value="@item.CategoryId"
+                                                        @(idValue != null && idValue.Contains(item.CategoryId) ? "checked" : "")>
+                                                        <em class="custom-control-label" for="book-@item.CategoryId">@item.CategoryName</em>
+                                                    </div>
+                                                </li>
+                                            }
+                                        </ul>
+                                        <input type="submit" class="btn btn-block btn-primary font-weight-bold my-3 py-3" value="Filter">
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="tg-widget tg-widgetinstagram">
+                                <div class="tg-widgettitle">
+                                    <h3>Instagram</h3>
+                                </div>
+                                <div class="tg-widgetcontent">
+                                    <ul>
+                                        <li>
+                                            <figure>
+                                                <img src="~/img/instagram/img-01.jpg" alt="image description">
+                                                <figcaption><a href="javascript:void(0);"><i class="icon-heart"></i><em>50,134</em></a></figcaption>
+                                            </figure>
+                                        </li>
+                                        <li>
+                                            <figure>
+                                                <img src="~/img/instagram/img-02.jpg" alt="image description">
+                                                <figcaption><a href="javascript:void(0);"><i class="icon-heart"></i><em>50,134</em></a></figcaption>
+                                            </figure>
+                                        </li>
+                                        <li>
+                                            <figure>
+                                                <img src="~/img/instagram/img-03.jpg" alt="image description">
+                                                <figcaption><a href="javascript:void(0);"><i class="icon-heart"></i><em>50,134</em></a></figcaption>
+                                            </figure>
+                                        </li>
+                                        <li>
+                                            <figure>
+                                                <img src="~/img/instagram/img-04.jpg" alt="image description">
+                                                <figcaption><a href="javascript:void(0);"><i class="icon-heart"></i><em>50,134</em></a></figcaption>
+                                            </figure>
+                                        </li>
+                                        <li>
+                                            <figure>
+                                                <img src="~/img/instagram/img-05.jpg" alt="image description">
+                                                <figcaption><a href="javascript:void(0);"><i class="icon-heart"></i><em>50,134</em></a></figcaption>
+                                            </figure>
+                                        </li>
+                                        <li>
+                                            <figure>
+                                                <img src="~/img/instagram/img-06.jpg" alt="image description">
+                                                <figcaption><a href="javascript:void(0);"><i class="icon-heart"></i><em>50,134</em></a></figcaption>
+                                            </figure>
+                                        </li>
+                                        <li>
+                                            <figure>
+                                                <img src="~/img/instagram/img-07.jpg" alt="image description">
+                                                <figcaption><a href="javascript:void(0);"><i class="icon-heart"></i><em>50,134</em></a></figcaption>
+                                            </figure>
+                                        </li>
+                                        <li>
+                                            <figure>
+                                                <img src="~/img/instagram/img-08.jpg" alt="image description">
+                                                <figcaption><a href="javascript:void(0);"><i class="icon-heart"></i><em>50,134</em></a></figcaption>
+                                            </figure>
+                                        </li>
+                                        <li>
+                                            <figure>
+                                                <img src="~/img/instagram/img-09.jpg" alt="image description">
+                                                <figcaption><a href="javascript:void(0);"><i class="icon-heart"></i><em>50,134</em></a></figcaption>
+                                            </figure>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </aside>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var id = '@idValue';
+        if (id === '' && document.querySelector('#book-all')) {
+            document.querySelector('#book-all').checked = true;
+        } else if (id !== '') {
+            var selectedId = "#book-" + id;
+            var selectedElement = document.querySelector(selectedId);
+            if (selectedElement) {
+                selectedElement.checked = true;
+            }
+        }
+
+
+        function myFunction(obj) {
+            var checkBox = document.getElementsByName("cid");
+            if ((obj.id == 'book-all') && (checkBox[0].checked == true)) {
+                for (var i = 1; i < checkBox.length; i++) {
+                    checkBox[i].checked = false;
+                }
+            } else {
+                for (var i = 1; i < checkBox.length; i++) {
+                    if (checkBox[i].checked == true)
+                        checkBox[0].checked = false;
+                }
+            }
+
+            for (var i = 0; i < checkBox.length; i++) {
+                if (checkBox[i].checked == true) {
+                    for (var z = 0; z < checkBox.length; z++) {
+                        checkBox[z].checked = false;
+                    }
+                    checkBox[i].checked = true;
+                    break;
+                }
+            }
+        }
+
+</script>
+<!--End Script Handle Sidebar
+-->

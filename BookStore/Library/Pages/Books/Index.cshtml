@@ -1,0 +1,124 @@
+﻿@page
+@model Library.Pages.Book.IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<section class="tg-sectionspace tg-haslayout">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="tg-sectionhead">
+                    <h2><span>People’s Choice</span>Categories</h2>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div id="tg-bestsellingbooksslider" class="tg-bestsellingbooksslider tg-bestsellingbooks owl-carousel">
+                    @foreach (var item in Model.Categories)
+                    {
+                        <div class="item">
+                            <div class="tg-postbook">
+                                <figure class="tg-featureimg">
+                                    <div class="tg-bookimg">
+                                        <a asp-page="/Books/Search" asp-route-cid="@item.CategoryId">
+                                            <div class="tg-frontcover"><img src="@item.Image" alt="image description"></div>
+                                            <div class="tg-backcover"><img src="@item.Image" alt="image description"></div>
+                                        </a>
+                                    </div>
+                                </figure>
+                                <div class="tg-postbookcontent">
+                                    <div class="tg-booktitle">
+                                        <h3><a asp-page="/Books/Search" asp-route-cid="@item.CategoryId">@item.CategoryName</a></h3>
+                                    </div>
+                                    <span class="tg-bookprice">
+                                        <ins>@item.Books.Where(x => x.Status.Value).ToList().Count books</ins>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="tg-parallax tg-bgcollectioncount tg-haslayout" data-z-index="-100" data-appear-top-offset="600" data-parallax="scroll" data-image-src="/img/parallax/bgparallax-04.jpg">
+    <div class="tg-sectionspace tg-collectioncount tg-haslayout">
+        <div class="container">
+            <div class="row">
+                <div id="tg-collectioncounters" class="tg-collectioncounters">
+                    <div class="tg-collectioncounter tg-drama">
+                        <div class="tg-collectioncountericon">
+                            <i class="icon-bubble"></i>
+                        </div>
+
+                    </div>
+                    <div class="tg-collectioncounter tg-horror">
+                        <div class="tg-collectioncountericon">
+                            <i class="icon-heart-pulse"></i>
+                        </div>
+
+                    </div>
+                    <div class="tg-collectioncounter tg-romance">
+                        <div class="tg-collectioncountericon">
+                            <i class="icon-heart"></i>
+                        </div>
+
+                    </div>
+                    <div class="tg-collectioncounter tg-fashion">
+                        <div class="tg-collectioncountericon">
+                            <i class="icon-star"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="tg-sectionspace tg-haslayout">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="tg-sectionhead">
+                    <h2><span>Some Great Books</span>Latest Book</h2>
+                    <a class="tg-btn" href="javascript:void(0);">View All</a>
+                </div>
+            </div>
+            <div id="tg-pickedbyauthorslider" class="tg-pickedbyauthor tg-pickedbyauthorslider owl-carousel">
+                @foreach (var item in Model.Book)
+                {
+                    <div class="item">
+                        <div class="tg-postbook">
+                            <figure class="tg-featureimg">
+                                <div class="tg-bookimg">
+                                    <div class="tg-frontcover"><img src="@item.Image" alt="image description"></div>
+                                </div>
+                                <div class="tg-hovercontent">
+                                    <div class="tg-description">
+                                        <p>@item.Description</p>
+                                    </div>
+                                    <strong class="tg-bookcategory">Category: @item.Category.CategoryName</strong>
+                                    <strong class="tg-bookprice">Publication Date:@(item.PublicationDate.HasValue ? item.PublicationDate.Value.ToString("dd/MM/yyyy") : "N/A")</strong>
+                                    <strong class="tg-bookprice">Price: &euro; @item.Price</strong>
+                                    <div class="tg-ratingbox">
+                                        @for (int i = 1; i <= item.Rate; i++)
+                                        {
+
+                                            <span class="fa fa-star text-primary mr-1"><span></span></span>
+                                        }
+                                    </div>
+                                </div>
+                            </figure>
+                            <div class="tg-postbookcontent">
+                                <div class="tg-booktitle">
+                                    <h3><a asp-page="/Books/Detail" asp-route-id="@item.BookId">@item.Title</a></h3>
+                                </div>
+                                <span class="tg-bookwriter">By: <a href="">@item.Author.Fullname</a></span>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,289 @@
+﻿<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>@ViewData["Title"]</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="stylesheet" href="~/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/css/normalize.css">
+    <link rel="stylesheet" href="~/css/font-awesome.min.css">
+    <link rel="stylesheet" href="~/css/icomoon.css">
+    <link rel="stylesheet" href="~/css/jquery-ui.css">
+    <link rel="stylesheet" href="~/css/owl.carousel.css">
+    <link rel="stylesheet" href="~/css/transitions.css">
+    <link rel="stylesheet" href="~/css/main.css">
+    <link rel="stylesheet" href="~/css/color.css">
+    <link rel="stylesheet" href="~/css/responsive.css">
+    <style>
+        #tg-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background-color: #fff;
+        }
+
+        body {
+            padding-top: 120px; /* Điều chỉnh cho phù hợp với chiều cao header */
+        }
+    </style>
+</head>
+
+<body class="tg-home tg-homeone">
+
+    <div id="tg-wrapper" class="tg-wrapper tg-haslayout">
+        <!--************************************
+                Header Start
+        *************************************-->
+        <header id="tg-header" class="tg-header tg-haslayout">
+            <div class="tg-topbar">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tg-middlecontainer">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <strong class="tg-logo"><a href="/Books/Index"><img src="~/img/logo.png" alt="company name here"></a></strong>
+                            <div class="tg-wishlistandcart">
+
+                                <div class="dropdown tg-themedropdown tg-minicartdropdown">
+                                    <a asp-page="/Orders/Cart" class="tg-btnthemedropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span class="tg-themebadge">@Context.Session.GetInt32("cartcount")</span>
+                                        <i class="icon-cart"></i>
+                                    </a>
+                                </div>
+                                <div class="dropdown tg-themedropdown tg-wishlistdropdown">
+                                    @if (Context.Session.GetString("username") == null)
+                                    {
+                                        <a href="#" id="tg-wishlisst" class="tg-btnthemedropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <span>Guest</span>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a href="#" id="tg-wishlisst" class="tg-btnthemedropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <span>@Context.Session.GetString("username")</span>
+                                        </a>
+                                    }
+                                    <div class="dropdown-menu tg-themedropdownmenu" aria-labelledby="tg-wishlisst">
+                                        @if (Context.Session.GetString("username") != null)
+                                        {
+                                            <a asp-page="/Auth/Profile" class="tg-description">User profile</a>
+                                            <a asp-page="/Orders/Cart" class="tg-description">My Cart</a>
+                                            <a asp-page="/Orders/Order" class="tg-description">My Order</a>
+                                            @if (Context.Session.GetString("role").Equals("admin"))
+                                            {
+                                                <a asp-page="/Admin/Dashboard" class="dropdown-item">Admin Page</a>
+
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <button class="tg-description" type="button" onclick="window.location.href='/Auth/Login'">Login</button>
+                                        }
+
+
+
+                                        @if (Context.Session.GetString("username") != null)
+                                        {
+                                            <button class="tg-description" type="button" onclick="window.location.href='/Auth/logout'">Logout</button>
+                                        }
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="tg-searchbox">
+                                <form class="tg-formtheme tg-formsearch" method="get" asp-page="/Books/Search">
+                                    <fieldset>
+                                        <input type="text" name="name" class="typeahead form-control" placeholder="Search by title" value="@ViewData["search"]">
+                                        <button type="submit"><i class="icon-magnifier"></i></button>
+                                    </fieldset>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tg-navigationarea">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <nav id="tg-nav" class="tg-nav">
+                                <div class="navbar-header">
+                                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#tg-navigation" aria-expanded="false">
+                                        <span class="sr-only">Toggle navigation</span>
+                                        <span class="icon-bar"></span>
+                                        <span class="icon-bar"></span>
+                                        <span class="icon-bar"></span>
+                                    </button>
+                                </div>
+                                <div id="tg-navigation" class="collapse navbar-collapse tg-navigation">
+                                    <ul>
+                                        <li class="menu-item-has-children menu-item-has-mega-menu">
+                                            <a href="javascript:void(0);">All Categories</a>
+                                            <div class="mega-menu">
+                                                <ul class="tg-themetabnav" role="tablist">
+                                                    <li role="presentation" class="active">
+                                                        <a asp-page="/Books/Search" asp-route-cid="1">Action</a>
+                                                    </li>
+                                                    <li>
+                                                        <a asp-page="/Books/Search" asp-route-cid="2">Comedy</a>
+                                                    </li>
+                                                    <li role="presentation">
+                                                        <a asp-page="/Books/Search" asp-route-cid="3">Adventure</a>
+                                                    </li>
+                                                    <li role="presentation">
+                                                        <a asp-page="/Books/Search" asp-route-cid="4">Crime</a>
+                                                    </li>
+                                                    <li role="presentation">
+                                                        <a asp-page="/Books/Search" asp-route-cid="5">Sci-Fiction</a>
+                                                    </li>
+                                                    <li role="presentation">
+                                                        <a asp-page="/Books/Search" asp-route-cid="10">Religion</a>
+                                                    </li>
+                                                    <li role="presentation">
+                                                        <a asp-page="/Books/Search" asp-route-cid="11">Romance</a>
+                                                    </li>
+                                                    <li role="presentation">
+                                                        <a asp-page="/Books/Search" asp-route-cid="12">War</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </li>
+                                        <li><a asp-page="/Books/Index">Home</a></li>
+                                        <li><a asp-page="/Books/Authors">Authors</a></li>
+                                        <li><a asp-page="/Books/Search">Books</a></li>
+                                    </ul>
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        @RenderBody()
+        <footer id="tg-footer" class="tg-footer tg-haslayout">
+            <div class="tg-footerarea">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <ul class="tg-clientservices">
+                                <li class="tg-devlivery">
+                                    <span class="tg-clientserviceicon"><i class="icon-rocket"></i></span>
+                                    <div class="tg-titlesubtitle">
+                                        <h3>Fast Delivery</h3>
+                                        <p>Shipping Worldwide</p>
+                                    </div>
+                                </li>
+                                <li class="tg-discount">
+                                    <span class="tg-clientserviceicon"><i class="icon-tag"></i></span>
+                                    <div class="tg-titlesubtitle">
+                                        <h3>Open Discount</h3>
+                                        <p>Offering Open Discount</p>
+                                    </div>
+                                </li>
+                                <li class="tg-quality">
+                                    <span class="tg-clientserviceicon"><i class="icon-leaf"></i></span>
+                                    <div class="tg-titlesubtitle">
+                                        <h3>Eyes On Quality</h3>
+                                        <p>Publishing Quality Work</p>
+                                    </div>
+                                </li>
+                                <li class="tg-support">
+                                    <span class="tg-clientserviceicon"><i class="icon-heart"></i></span>
+                                    <div class="tg-titlesubtitle">
+                                        <h3>24/7 Support</h3>
+                                        <p>Serving Every Moments</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="tg-threecolumns">
+                            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+                                <div class="tg-footercol">
+                                    <strong class="tg-logo"><a href="javascript:void(0);"><img src="~/img/flogo.png" alt="image description"></a></strong>
+
+                                    <ul class="tg-socialicons">
+                                        <li class="tg-facebook"><a href="javascript:void(0);"><i class="fa fa-facebook"></i></a></li>
+                                        <li class="tg-twitter"><a href="javascript:void(0);"><i class="fa fa-twitter"></i></a></li>
+                                        <li class="tg-linkedin"><a href="javascript:void(0);"><i class="fa fa-linkedin"></i></a></li>
+                                        <li class="tg-googleplus"><a href="javascript:void(0);"><i class="fa fa-google-plus"></i></a></li>
+                                        <li class="tg-rss"><a href="javascript:void(0);"><i class="fa fa-rss"></i></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+                                <div class="tg-footercol tg-widget tg-widgetnavigation">
+                                    <div class="tg-widgettitle">
+                                        <h3>Shipping And Help Information</h3>
+                                    </div>
+                                    <div class="tg-widgetcontent">
+                                        <ul>
+                                            <li><a href="javascript:void(0);">Privacy</a></li>
+                                            <li><a href="javascript:void(0);">Contact Us</a></li>
+                                        </ul>
+                                        <ul>
+                                            <li><a href="javascript:void(0);">FAQ</a></li>
+                                            <li><a href="javascript:void(0);">Testimonials</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tg-footerbar">
+                <a id="tg-btnbacktotop" class="tg-btnbacktotop" href="javascript:void(0);"><i class="icon-chevron-up"></i></a>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <span class="tg-paymenttype"><img src="~/img/paymenticon.png" alt="image description"></span>
+                            <span class="tg-copyright">2017 All Rights Reserved By &copy; Book Library</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!--************************************
+                Footer End
+        *************************************-->
+    </div>
+    <!--************************************
+            Wrapper End
+    *************************************-->
+    <script src="~/js/vendor/jquery-library.js"></script>
+    <script src="~/js/vendor/bootstrap.min.js"></script>
+    <script src="https://maps.google.com/maps/api/js?key=AIzaSyCR-KEWAVCn52mSdeVeTqZjtqbmVJyfSus&amp;language=en"></script>
+    <script src="~/js/owl.carousel.min.js"></script>
+    <script src="~/js/jquery.vide.min.js"></script>
+    <script src="~/js/countdown.js"></script>
+    <script src="~/js/jquery-ui.js"></script>
+    <script src="~/js/parallax.js"></script>
+    <script src="~/js/countTo.js"></script>
+    <script src="~/js/appear.js"></script>
+    <script src="~/js/gmap3.js"></script>
+    <script src="~/js/main.js"></script>
+
+    <script src="~/js/popper.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

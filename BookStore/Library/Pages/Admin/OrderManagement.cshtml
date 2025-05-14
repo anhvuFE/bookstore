@@ -1,0 +1,210 @@
+﻿@page
+@model Library.Pages.Admin.OrderManagementModel
+@{
+    Layout = "Shared/_LayoutAdmin";
+    ViewData["Title"] = "Order Manage";
+}
+<div id="main">
+    <header class="mb-3">
+        <a href="#" class="burger-btn d-block d-xl-none">
+            <i class="bi bi-justify fs-3"></i>
+        </a>
+    </header>
+
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last">
+                    <h3>Order Management</h3>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="dashboard">Dashboard</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Order Management</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <section class="section">
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-striped" id="table1">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Order Date</th>
+                                <th>Address</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var item in Model.Orders)
+                            {
+                                <tr>
+
+                                    <td>@item.User.Fullname</td>
+                                    <td>
+                                        @item.OrderDate
+                                    </td>
+                                    <td>@item.Address</td>
+                                    <td>@item.Total</td>
+
+                                    @{
+                                        var status = "";
+                                        if (item.Status == "Completed" ){
+                                            status = "green";
+                                        }else if (item.Status == "Cancelled")
+                                        {
+                                            status = "red";
+                                        }
+                                        else
+                                        {
+                                            status = "orange";
+                                        }
+
+
+                                    }
+
+                                    <td>
+                                        <span class="badge" style="background:@status; color:rgb(238, 238, 238)">@item.Status</span>
+                                    </td>
+                                    <td>
+                                        <!--Modal trigger-->
+                                        <a data-toggle="modal" data-target="#modalEdit" class='sidebar-link clicking' data-orderid="@item.OrderId" data-status="@item.Status" data-address="@item.Address">
+                                            <i class="fa fa-pencil"></i>
+
+                                        </a>
+                                        &nbsp;
+                                        <a data-toggle="modal" data-target="#modalView" class='sidebar-link clickingView' data-orderid="@item.OrderId" data-status="@item.Status" data-address="@item.Address">
+
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                        <!-- End Modal trigger -->
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+    </div>
+
+
+</div>
+<div class="modal hide fade" id="modalEdit">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-page="/Admin/OrderManagement" asp-page-handler="EditOrder" method="POST" enctype="multipart/form-data">
+                <input type="hidden" id="orderid" name="id">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit Order</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="address" class="col-form-label">Address:</label>
+                        <input class="form-control" type="text" name="address" id="address" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="status" class="col-form-label">Status:</label>
+                        <select class="form-control" id="status" name="status">
+                            <option value="Pending">Pending</option>
+                            <option value="Cancelled">Cancelled</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+
+                    </div>
+                </div>
+                
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal hide fade" id="modalView">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+
+<script>
+    // Simple Datatable
+    let table1 = document.querySelector('#table1');
+    let dataTable = new simpleDatatables.DataTable(table1);
+</script>
+<script>
+    $(document).ready(function () {
+        $(".clicking").click(function () { // Click to only happen on announce links
+            $("#orderid").val($(this).data('orderid'));
+            $("#status").val($(this).data('status'));
+            $("#address").val($(this).data('address'));
+            $('#modalEdit').modal('show');
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $(".clickingView").click(function () { // Click to only happen on announce links
+            const orderId = $(this).data('orderid');
+            
+            $.ajax({
+                url: '/Admin/OrderManagement?handler=OrderDetails', 
+                type: 'GET',
+                data: { orderId: orderId },
+                success: function (response) {
+                    const modalContent = $('#modalView .modal-content');
+                    modalContent.html(response);
+
+                    // Hiển thị modal duy nhất
+                    $('#modalView').modal('show');
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+
+            });
+        });
+    });
+</script>
+<script>
+    function exportData() {
+        fetch('/Admin/OrderManagement?handler=ExportFile')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Export failed');
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = 'data.csv';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            })
+            .catch(error => {
+                console.error('Export failed:', error);
+                alert('Export failed. Please try again later.');
+            });
+    }
+</script>
